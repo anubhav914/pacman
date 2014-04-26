@@ -86,32 +86,29 @@ def depthFirstSearch(problem):
     """
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    #print "Start's successors:", problem.getSuccessors(problem.getStartState())
     
     "*** YOUR CODE HERE ***"
-    stack = [problem.getStartState()]
-    directions = {problem.getStartState() : None}
-    visited = {problem.getStartState() : None}
-    a = []
-    while len(stack):
-        print stack
+    stack = util.Stack()
+    stack.push(problem.getStartState())
+    parents = { problem.getStartState() : None }
+    visited = [problem.getStartState()]
+    path = []
+    while not stack.isEmpty():
         state = stack.pop()
         if problem.isGoalState(state):
-            a = []
-            while visited[state] is not None:
-                a.append(directions[state])
-                state = visited[state]
-            a.reverse()
-            directions = a
+            while parents[state] is not None:
+              parentPos, direction = parents[state]
+              path.append(direction)
+              state = parentPos
+            path.reverse()
             break
-        for successor in problem.getSuccessors(state):
-            if successor[0] not in visited:
-                visited[successor[0]] =  state
-                directions[successor[0]] = successor[1]
-                stack.append(successor[0])
-    return directions
-
-    util.raiseNotDefined()
+        for position, direction, cost in problem.getSuccessors(state):
+            if position not in visited:
+                visited.append(position)
+                parents[position] = (state, direction)
+                stack.push(position)
+    return path if path else util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """
