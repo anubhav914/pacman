@@ -108,7 +108,9 @@ def depthFirstSearch(problem):
                 visited.append(position)
                 parents[position] = (state, direction)
                 stack.push(position)
-    return path if path else util.raiseNotDefined()
+    if path:
+        return path
+    util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """
@@ -134,7 +136,9 @@ def breadthFirstSearch(problem):
                 visited.append(position)
                 parents[position] = (state, direction)
                 queue.push(position)
-    return path if path else util.raiseNotDefined()
+    if path:
+        return path
+    util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
@@ -158,7 +162,10 @@ def uniformCostSearch(problem):
                 visited.append(position)
                 parents[position] = (state, direction)
                 priorityQueue.push(position, cost)
-    return path if path else util.raiseNotDefined()
+    if path:
+        return path
+    util.raiseNotDefined()
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -170,8 +177,28 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
     "*** YOUR CODE HERE ***"
+    priorityQueue = util.PriorityQueue()
+    priorityQueue.push( (problem.getStartState(),0) ,1 )
+    parents = { problem.getStartState() : None }
+    visited = [problem.getStartState()]
+    path = []
+    while not priorityQueue.isEmpty():
+        state, pathcost = priorityQueue.pop()
+        if problem.isGoalState(state):
+            while parents[state] is not None:
+              parentPos, direction = parents[state]
+              path.append(direction)
+              state = parentPos
+            path.reverse()
+            break
+        for position, direction, cost in problem.getSuccessors(state):
+            if position not in visited:
+                visited.append(position)
+                parents[position] = (state, direction)
+                priorityQueue.push((position, pathcost+1), heuristic(position, problem))
+    if path:
+        return path
     util.raiseNotDefined()
-
 
 # Abbreviations
 bfs = breadthFirstSearch
