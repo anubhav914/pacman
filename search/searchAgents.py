@@ -275,12 +275,9 @@ class CornersProblem(search.SearchProblem):
         Stores the walls, pacman's starting position and corners.
         """
         self.walls = startingGameState.getWalls()
-        # print self.walls
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height-2, self.walls.width-2
         self.corners = ((1,1), (1,top), (right, 1), (right, top))
-        # print self.corners
-        # print self.startingPosition
         self.startState = (self.startingPosition, ())
         self.costFn = lambda x: 1
         for corner in self.corners:
