@@ -144,12 +144,12 @@ def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
     priorityQueue = util.PriorityQueue()
-    priorityQueue.push(problem.getStartState(),1)
+    priorityQueue.push( (problem.getStartState(),0) ,1 )
     parents = { problem.getStartState() : None }
     visited = [problem.getStartState()]
     path = []
     while not priorityQueue.isEmpty():
-        state = priorityQueue.pop()
+        state, pathcost = priorityQueue.pop()
         if problem.isGoalState(state):
             while parents[state] is not None:
               parentPos, direction = parents[state]
@@ -161,7 +161,7 @@ def uniformCostSearch(problem):
             if position not in visited:
                 visited.append(position)
                 parents[position] = (state, direction)
-                priorityQueue.push(position, cost)
+                priorityQueue.push((position, pathcost+1), cost + pathcost)
     if path:
         return path
     util.raiseNotDefined()
@@ -195,7 +195,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             if position not in visited:
                 visited.append(position)
                 parents[position] = (state, direction)
-                priorityQueue.push((position, pathcost+1), heuristic(position, problem))
+                priorityQueue.push((position, pathcost+1), pathcost + cost + heuristic(position, problem))
     if path:
         return path
     util.raiseNotDefined()
