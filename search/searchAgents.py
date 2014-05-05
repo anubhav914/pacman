@@ -299,8 +299,7 @@ class CornersProblem(search.SearchProblem):
     def isGoalState(self, state):
         "Returns whether this search state is a goal state of the problem"
         "*** YOUR CODE HERE ***"
-        cornersVisited = state[1]
-        return True if sorted(cornersVisited) == sorted(self.corners) else False
+        return len(state[1]) == len(self.corners)
         util.raiseNotDefined()
 
     def getSuccessors(self, state):
@@ -348,6 +347,10 @@ class CornersProblem(search.SearchProblem):
             if self.walls[x][y]: return 999999
         return len(actions)
 
+def manhattanDistance(point1, point2):
+    return abs(point1[0] - point2[0]) + abs(point1[1] - point2[1])
+
+
 
 def cornersHeuristic(state, problem):
     """
@@ -365,8 +368,13 @@ def cornersHeuristic(state, problem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
-    "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    distance = 0
+    pos, visitedCorners = state
+    for corner in corners:
+        if corner not in visitedCorners:
+            distance = distance + manhattanDistance(pos,corner)
+    return distance
+    # return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -456,6 +464,11 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
+    if foodGrid.asList():
+        return max([ manhattanDistance(position,foodPoint) for foodPoint in foodGrid.asList() ]) + foodGrid.count()
+    else:
+        return 0
+    return foodGrid.count()
     "*** YOUR CODE HERE ***"
     return 0
 
