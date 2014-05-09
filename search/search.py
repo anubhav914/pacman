@@ -19,6 +19,7 @@ by Pacman agents (in searchAgents.py).
 """
 
 import util
+import pdb
 
 class SearchProblem:
     """
@@ -84,30 +85,30 @@ def depthFirstSearch(problem):
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
     """
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    # print "Start:", problem.getStartState()
+    # print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     #print "Start's successors:", problem.getSuccessors(problem.getStartState())
     
     "*** YOUR CODE HERE ***"
     stack = util.Stack()
     stack.push(problem.getStartState())
     parents = { problem.getStartState() : None }
-    visited = [problem.getStartState()]
+    visited = []
     path = []
     while not stack.isEmpty():
         state = stack.pop()
+        visited.append(state)
         if problem.isGoalState(state):
             while parents[state] is not None:
-              parentPos, direction = parents[state]
+              parentState, direction = parents[state]
               path.append(direction)
-              state = parentPos
+              state = parentState
             path.reverse()
             break
-        for position, direction, cost in problem.getSuccessors(state):
-            if position not in visited:
-                visited.append(position)
-                parents[position] = (state, direction)
-                stack.push(position)
+        for successorState, direction, cost in problem.getSuccessors(state):
+            if successorState not in visited:
+                parents[successorState] = (state, direction)
+                stack.push(successorState)
     if path:
         return path
     util.raiseNotDefined()
@@ -126,16 +127,16 @@ def breadthFirstSearch(problem):
         state = queue.pop()
         if problem.isGoalState(state):
             while parents[state] is not None:
-              parentPos, direction = parents[state]
+              parentState, direction = parents[state]
               path.append(direction)
-              state = parentPos
+              state = parentState
             path.reverse()
             break
-        for position, direction, cost in problem.getSuccessors(state):
-            if position not in visited:
-                visited.append(position)
-                parents[position] = (state, direction)
-                queue.push(position)
+        for successorState, direction, cost in problem.getSuccessors(state):
+            if successorState not in visited:
+                visited.append(successorState)
+                parents[successorState] = (state, direction)
+                queue.push(successorState)
     if path:
         return path
     util.raiseNotDefined()
@@ -143,25 +144,34 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    priorityQueue = util.PriorityQueue()
-    priorityQueue.push( (problem.getStartState(),0) ,1 )
+    frontier = util.PriorityQueue()
+    frontier.push( problem.getStartState(), 0)
     parents = { problem.getStartState() : None }
-    visited = [problem.getStartState()]
+    distance = { problem.getStartState() : 0 }
+    visited = []
     path = []
-    while not priorityQueue.isEmpty():
-        state, pathcost = priorityQueue.pop()
+    while not frontier.isEmpty():
+        # pdb.set_trace()
+        state = frontier.pop()
+        pathcost = distance[state]
+        visited.append(state)
         if problem.isGoalState(state):
             while parents[state] is not None:
-              parentPos, direction = parents[state]
+              parentState, direction = parents[state]
               path.append(direction)
-              state = parentPos
+              state = parentState
             path.reverse()
             break
-        for position, direction, cost in problem.getSuccessors(state):
-            if position not in visited:
-                visited.append(position)
-                parents[position] = (state, direction)
-                priorityQueue.push((position, pathcost+1), cost + pathcost)
+        for successorState, direction, cost in problem.getSuccessors(state):
+            if successorState not in visited:
+                if successorState in distance and distance[successorState] < cost + pathcost:
+                    continue
+                if successorState in distance:
+                    frontier.changePriority(successorState, cost + pathcost)
+                else:
+                    frontier.push(successorState, cost + pathcost)
+                distance[successorState] = cost + pathcost
+                parents[successorState] = (state, direction)
     if path:
         return path
     util.raiseNotDefined()
@@ -177,28 +187,38 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
     "*** YOUR CODE HERE ***"
-    priorityQueue = util.PriorityQueue()
-    priorityQueue.push( (problem.getStartState(),0) ,1 )
+    frontier = util.PriorityQueue()
+    frontier.push( problem.getStartState(), 0)
     parents = { problem.getStartState() : None }
-    visited = [problem.getStartState()]
+    distance = { problem.getStartState() : 0 }
+    visited = []
     path = []
-    while not priorityQueue.isEmpty():
-        state, pathcost = priorityQueue.pop()
+    while not frontier.isEmpty():
+        # pdb.set_trace()
+        state = frontier.pop()
+        pathcost = distance[state]
+        visited.append(state)
         if problem.isGoalState(state):
             while parents[state] is not None:
-              parentPos, direction = parents[state]
+              parentState, direction = parents[state]
               path.append(direction)
-              state = parentPos
+              state = parentState
             path.reverse()
             break
-        for position, direction, cost in problem.getSuccessors(state):
-            if position not in visited:
-                visited.append(position)
-                parents[position] = (state, direction)
-                priorityQueue.push((position, pathcost+1), pathcost + cost + heuristic(position, problem))
+        for successorState, direction, cost in problem.getSuccessors(state):
+            if successorState not in visited:
+                if successorState in distance and distance[successorState] < cost + pathcost:
+                    continue
+                if successorState in distance:
+                    frontier.changePriority(successorState, cost + pathcost + heuristic(successorState, problem))
+                else:
+                    frontier.push(successorState, cost + pathcost + heuristic(successorState, problem))
+                distance[successorState] = cost + pathcost
+                parents[successorState] = (state, direction)
     if path:
         return path
     util.raiseNotDefined()
+
 
 # Abbreviations
 bfs = breadthFirstSearch

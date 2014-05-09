@@ -39,6 +39,7 @@ from game import Directions
 from game import Agent
 from game import Actions
 import util
+import graphAlgorithms
 import time
 import search
 
@@ -347,8 +348,8 @@ class CornersProblem(search.SearchProblem):
             if self.walls[x][y]: return 999999
         return len(actions)
 
-def manhattanDistance(point1, point2):
-    return abs(point1[0] - point2[0]) + abs(point1[1] - point2[1])
+# def manhattanDistance(point1, point2):
+#     return abs(point1[0] - point2[0]) + abs(point1[1] - point2[1])
 
 
 
@@ -368,12 +369,11 @@ def cornersHeuristic(state, problem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
-    distance = 0
     pos, visitedCorners = state
-    for corner in corners:
-        if corner not in visitedCorners:
-            distance = distance + manhattanDistance(pos,corner)
-    return distance
+    unVisitedCorners = [ corner for corner in corners if corner not in visitedCorners ]
+    if not len(unVisitedCorners):
+        return 0
+    return max([graphAlgorithms.manhattanDistance(pos, corner) for corner in unVisitedCorners])
     # return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
@@ -464,11 +464,8 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    if foodGrid.asList():
-        return max([ manhattanDistance(position,foodPoint) for foodPoint in foodGrid.asList() ]) + foodGrid.count()
-    else:
-        return 0
-    return foodGrid.count()
+    points = foodGrid.asList() + [position]
+    return graphAlgorithms.lenghtMST(points)
     "*** YOUR CODE HERE ***"
     return 0
 

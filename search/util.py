@@ -17,6 +17,7 @@ import sys
 import inspect
 import heapq, random
 import cStringIO
+import pdb
 
 
 class FixedRandom:
@@ -185,6 +186,24 @@ class PriorityQueue:
 
     def isEmpty(self):
         return len(self.heap) == 0
+
+    def getItemIndex(self, item):
+        count = 0
+        for _,_,listItem in self.heap:
+            if listItem == item:
+                return count
+            count = count + 1
+
+    def changePriority(self, item, newPiority):
+        itemIndex = self.getItemIndex(item)
+        self.heap.pop(itemIndex)
+        self.push(item, newPiority)
+
+    def asList(self):
+        return self.heap
+
+    def itemsAsList(self):
+        return [item for _,_,item in self.heap ]
 
 class PriorityQueueWithFunction(PriorityQueue):
     """
