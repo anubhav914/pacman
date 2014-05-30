@@ -371,10 +371,7 @@ def cornersHeuristic(state, problem):
 
     pos, visitedCorners = state
     unVisitedCorners = [ corner for corner in corners if corner not in visitedCorners ]
-    if not len(unVisitedCorners):
-        return 0
-    return max([graphAlgorithms.manhattanDistance(pos, corner) for corner in unVisitedCorners])
-    # return 0 # Default to trivial solution
+    return graphAlgorithms.lengthMST(unVisitedCorners + [pos])
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -464,10 +461,11 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    points = foodGrid.asList() + [position]
-    return graphAlgorithms.lenghtMST(points)
-    "*** YOUR CODE HERE ***"
-    return 0
+    return graphAlgorithms.lengthMST(foodGrid.asList() + [position])
+    # # points = foodGrid.asList() + [position]
+    # # return graphAlgorithms.lenghtMST(points)
+    # "*** YOUR CODE HERE ***"
+    # return 0
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -489,13 +487,8 @@ class ClosestDotSearchAgent(SearchAgent):
     def findPathToClosestDot(self, gameState):
         "Returns a path (a list of actions) to the closest dot, starting from gameState"
         # Here are some useful elements of the startState
-        startPosition = gameState.getPacmanPosition()
-        food = gameState.getFood()
-        walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
-
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return search.ucs(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -516,7 +509,6 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         "Stores information from the gameState.  You don't need to change this."
         # Store the food for later reference
         self.food = gameState.getFood()
-
         # Store info for the PositionSearchProblem (no need to change this)
         self.walls = gameState.getWalls()
         self.startState = gameState.getPacmanPosition()
@@ -529,7 +521,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         that will complete the problem definition.
         """
         x,y = state
-
+        return self.food[x][y]
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
 
@@ -543,6 +535,7 @@ class ApproximateSearchAgent(Agent):
     def registerInitialState(self, state):
         "This method is called before any moves are made."
         "*** YOUR CODE HERE ***"
+        self.count = 1
 
     def getAction(self, state):
         """
@@ -551,7 +544,17 @@ class ApproximateSearchAgent(Agent):
         Directions.{North, South, East, West, Stop}
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        pos = state.getPacmanPosition()
+        problem = AnyFoodSearchProblem(state)
+        approxHueristicFn = lambda nextPos,prob: mazeDistance(nextPos, pos, state)
+        print self.count
+        self.count += 1
+        return search.astar(problem,approxHueristicFn)[0]
+        # pos,foods = state.getPacmanPosition(), state.getFood().asList()
+        # best_food_ordering = graphAlgorithms.approxTSP(foods,pos)
+        # print best_food_ordering
+        # return util.bestDirectionToGoal(best_food_ordering[0], pos, state.getLegalActions())
+        # util.raiseNotDefined()
 
 def mazeDistance(point1, point2, gameState):
     """
