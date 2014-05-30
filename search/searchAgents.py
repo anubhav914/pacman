@@ -535,7 +535,6 @@ class ApproximateSearchAgent(Agent):
     def registerInitialState(self, state):
         "This method is called before any moves are made."
         "*** YOUR CODE HERE ***"
-        self.count = 1
 
     def getAction(self, state):
         """
@@ -547,14 +546,8 @@ class ApproximateSearchAgent(Agent):
         pos = state.getPacmanPosition()
         problem = AnyFoodSearchProblem(state)
         approxHueristicFn = lambda nextPos,prob: mazeDistance(nextPos, pos, state)
-        print self.count
-        self.count += 1
         return search.astar(problem,approxHueristicFn)[0]
-        # pos,foods = state.getPacmanPosition(), state.getFood().asList()
-        # best_food_ordering = graphAlgorithms.approxTSP(foods,pos)
-        # print best_food_ordering
-        # return util.bestDirectionToGoal(best_food_ordering[0], pos, state.getLegalActions())
-        # util.raiseNotDefined()
+        util.raiseNotDefined()
 
 def mazeDistance(point1, point2, gameState):
     """

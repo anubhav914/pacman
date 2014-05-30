@@ -75,6 +75,18 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s,s,w,s,w,w,s,w]
 
+
+def buildPath(parents, state, path):
+    """ Returns a list of directions to reach the 
+    parents is a dictionary of state and direction
+    goal state 
+    We build the path going up the tree starting from leaf
+    """
+    while parents[state] is not None:
+      state, direction = parents[state]
+      path.append(direction)
+    path.reverse()
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first
@@ -90,20 +102,14 @@ def depthFirstSearch(problem):
     #print "Start's successors:", problem.getSuccessors(problem.getStartState())
     
     "*** YOUR CODE HERE ***"
-    stack = util.Stack()
-    stack.push(problem.getStartState())
-    parents = { problem.getStartState() : None }
-    visited = []
-    path = []
+    path, visited, stack, startState = [], [], util.Stack(), problem.getStartState()
+    stack.push(startState)
+    parents = { startState : None }
     while not stack.isEmpty():
         state = stack.pop()
         visited.append(state)
         if problem.isGoalState(state):
-            while parents[state] is not None:
-              parentState, direction = parents[state]
-              path.append(direction)
-              state = parentState
-            path.reverse()
+            buildPath(parents,state, path)
             break
         for successorState, direction, cost in problem.getSuccessors(state):
             if successorState not in visited:
@@ -118,19 +124,14 @@ def breadthFirstSearch(problem):
     Search the shallowest nodes in the search tree first.
     """
     "*** YOUR CODE HERE ***"
-    queue = util.Queue()
-    queue.push(problem.getStartState())
-    parents = { problem.getStartState() : None }
-    visited = [problem.getStartState()]
-    path = []
+    path, queue, startState = [], util.Queue(), problem.getStartState()
+    queue.push(startState)
+    parents = { startState : None }
+    visited = [startState]
     while not queue.isEmpty():
         state = queue.pop()
         if problem.isGoalState(state):
-            while parents[state] is not None:
-              parentState, direction = parents[state]
-              path.append(direction)
-              state = parentState
-            path.reverse()
+            path = getPath(parents, state)
             break
         for successorState, direction, cost in problem.getSuccessors(state):
             if successorState not in visited:
