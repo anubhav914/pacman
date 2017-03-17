@@ -124,7 +124,8 @@ def breadthFirstSearch(problem):
     Search the shallowest nodes in the search tree first.
     """
     "*** YOUR CODE HERE ***"
-    path, queue, startState = [], util.Queue(), problem.getStartState()
+    path = []
+    queue, startState = util.Queue(), problem.getStartState()
     queue.push(startState)
     parents = { startState : None }
     visited = [startState]
