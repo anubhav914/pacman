@@ -102,7 +102,8 @@ def depthFirstSearch(problem):
     #print "Start's successors:", problem.getSuccessors(problem.getStartState())
     
     "*** YOUR CODE HERE ***"
-    path, visited, stack, startState = [], [], util.Stack(), problem.getStartState()
+    path, visited = [], []
+    stack, startState = util.Stack(), problem.getStartState()
     stack.push(startState)
     parents = { startState : None }
     while not stack.isEmpty():
