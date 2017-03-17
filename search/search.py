@@ -109,6 +109,8 @@ def depthFirstSearch(problem):
     parents = { startState : None }
     while not stack.isEmpty():
         state = stack.pop()
+        if 1 == 1:
+            print "correctly working"
         visited.append(state)
         if problem.isGoalState(state):
             buildPath(parents,state, path)
