@@ -101,8 +101,10 @@ def depthFirstSearch(problem):
     # print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     #print "Start's successors:", problem.getSuccessors(problem.getStartState())
     
-    "*** YOUR CODE HERE ***"
-    path, visited, stack, startState = [], [], util.Stack(), problem.getStartState()
+    path = []
+    """testing git basics"""
+    startState, stack  = problem.getStartState(), util.Stack()
+    visited = []
     stack.push(startState)
     parents = { startState : None }
     while not stack.isEmpty():
