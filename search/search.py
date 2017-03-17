@@ -100,8 +100,7 @@ def depthFirstSearch(problem):
     # print "Start:", problem.getStartState()
     # print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     #print "Start's successors:", problem.getSuccessors(problem.getStartState())
-    path = []
-    visited = []
+    path, visited = [], []
     stack = util.Stack()
     startState = problem.getStartState()
     parents = { startState : None }
