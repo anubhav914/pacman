@@ -105,6 +105,9 @@ def depthFirstSearch(problem):
     """testing git basics"""
     startState, stack  = problem.getStartState(), util.Stack()
     visited = []
+    "*** YOUR CODE HERE ***"
+    path, visited = [], []
+    stack, startState = util.Stack(), problem.getStartState()
     stack.push(startState)
     parents = { startState : None }
     while not stack.isEmpty():
