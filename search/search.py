@@ -101,6 +101,7 @@ def depthFirstSearch(problem):
     # print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     #print "Start's successors:", problem.getSuccessors(problem.getStartState())
     path, visited = [], []
+    """first commit :-)"""
     stack, startState = util.Stack(), problem.getStartState()
     stack.push(startState)
     parents = { startState : None }
