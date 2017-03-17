@@ -105,18 +105,17 @@ def depthFirstSearch(problem):
     visited = []
     stack = util.Stack()
     startState = problem.getStartState()
-    stack.push(startState)
     parents = { startState : None }
+    stack.push(startState)
     while not stack.isEmpty():
         state = stack.pop()
-        if 1 == 1:
-            print "correctly working"
+        if state in visited:
+            continue
         visited.append(state)
         if problem.isGoalState(state):
             buildPath(parents,state, path)
             break
         for successorState, direction, cost in problem.getSuccessors(state):
-            if successorState not in visited:
                 parents[successorState] = (state, direction)
                 stack.push(successorState)
     if path:
